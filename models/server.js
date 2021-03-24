@@ -1,4 +1,6 @@
-const express = require('express')
+const express = require('express');
+const cors=require('cors');
+const router = require('../routes/usuarios');
 class Server {
 
   constructor() {
@@ -12,37 +14,20 @@ this.middlewares();
   }
 
 middlewares(){
+
+  //CORS
+  this.app.use(cors());
+
+  //lectura y parseo del body
+  this.app.use(express.json());
+
   //directorio publico
   this.app.use(express.static('public'));
 }
 
   routes() {
-    this.app.get('/api', (req, res) => {
-      res.json({
-        msg:'get api gato'
-      });
-    })
 
-
-    this.app.put('/api', (req, res) => {
-      res.json({
-        msg:'PUT api gato'
-      });
-    })
-
-
-    this.app.post('/api', (req, res) => {
-      res.json({
-        msg:'POST api gato'
-      });
-    })
-
-
-    this.app.delete('/api', (req, res) => {
-      res.json({
-        msg:'DELETE api gato'
-      });
-    })
+    this.app.use('/api/usuarios',require('../routes/usuarios'));
 
 
   }
