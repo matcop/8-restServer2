@@ -1,8 +1,15 @@
-const { response } = require('express');
+const { response, request } = require('express');
 
-const usuariosGet = (req, res = response) => {
+const usuariosGet = (req=request, res = response) => {
+  //const query=req.query;
+  const {q,nombre='desconocido',apikey,page=1,limit}=req.query;
   res.json({
-    msg: 'get Apu Controlador'
+    msg: 'get Apu Controlador',
+    q,
+    nombre,
+    apikey,
+    page,
+    limit
   });
 }
 
@@ -19,8 +26,11 @@ const usuariosPost = (req, res = response) => {
 }
 
 const usuariosPut = (req, res = response) => {
+
+  const {id}=req.params;
   res.json({
-    msg: 'PUT api gato'
+    msg: 'PUT api gato',
+    id
   });
 }
 
