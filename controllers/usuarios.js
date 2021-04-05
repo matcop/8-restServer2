@@ -1,4 +1,9 @@
 const { response, request } = require('express');
+const bcryptjs=require('bcryptjs');
+
+const Usuario=require('../models/usuario');//por convension esta la
+const { validationResult } = require('express-validator');
+//U mayuscula, nos hara dar decuenta que podemos crear instancias
 
 const usuariosGet = (req=request, res = response) => {
   //const query=req.query;
@@ -13,12 +18,35 @@ const usuariosGet = (req=request, res = response) => {
   });
 }
 
-const usuariosPost = (req, res = response) => {
-  const {nombre,edad}=req.body;
-  //const body=req.body;
+const usuariosPost = async(req, res = response) => {
+
+const errors=validationResult(req);
+if(!errors.isEmpty()){
+  return res.status(400).json(errors);
+}
+
+
+
+  //const {google,...resto}=req.body;//si deseamos mandar muchos mas datos.
+  //const usuario=new Usuario(resto);
+  const {nombre,email,password, rol}=req.body;
+ 
+  //esos son los campos para la creacion de usuarios, demas datos en el proceso.
+  const usuario=new Usuario({nombre, email,password,rol}); 
+
+  //verificar si el correo existe
+
+  //encriptar el password
+  const salt=bcryptjs.genSaltSync();
+  usuario.password=bcryptjs.hashSync(password,salt);
+
+  //guardar en la BD
+
+
+  await usuario.save();
   res.json({
-    msg: 'POST api gato',
-    nombre,edad
+    //msg: 'POST api gato',
+    usuario
 
   })
  
