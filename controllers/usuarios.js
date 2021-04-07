@@ -2,7 +2,8 @@ const { response, request } = require('express');
 const bcryptjs=require('bcryptjs');
 
 const Usuario=require('../models/usuario');//por convension esta la
-const { validationResult } = require('express-validator');
+
+
 //U mayuscula, nos hara dar decuenta que podemos crear instancias
 
 const usuariosGet = (req=request, res = response) => {
@@ -19,13 +20,8 @@ const usuariosGet = (req=request, res = response) => {
 }
 
 const usuariosPost = async(req, res = response) => {
-
-const errors=validationResult(req);
-if(!errors.isEmpty()){
-  return res.status(400).json(errors);
-}
-
-
+//try {
+  
 
   //const {google,...resto}=req.body;//si deseamos mandar muchos mas datos.
   //const usuario=new Usuario(resto);
@@ -35,6 +31,12 @@ if(!errors.isEmpty()){
   const usuario=new Usuario({nombre, email,password,rol}); 
 
   //verificar si el correo existe
+  const existeEmail= await Usuario.findOne({email});
+  if(existeEmail){
+    return res.status(400).json({
+      msg:'este correo ya esta registrado'
+    });
+  }
 
   //encriptar el password
   const salt=bcryptjs.genSaltSync();
@@ -49,9 +51,13 @@ if(!errors.isEmpty()){
     usuario
 
   })
+// } catch (error) {
+//   res.status(400).json(error);
+// }
+
  
   
-}
+};
 
 const usuariosPut = (req, res = response) => {
 
